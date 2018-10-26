@@ -1,6 +1,47 @@
-#easy_admin:
-#    entities:
-#        # List the entity class name you want to manage
-#        - App\Entity\Product
-#        - App\Entity\Category
-#        - App\Entity\User
+easy_admin:
+    disabled_actions: ['edit', 'new', 'delete']
+
+    list:
+        actions: ['show', 'search']
+
+    entities:
+        # List the entity class name you want to manage
+
+        AMMProduct:
+          class: App\Entity\AMMProduct
+          list:
+            fields: [{ property: 'id', label: 'AMM' }, 'name', { property: 'company.name', sortable: true}]
+
+
+            # Doctrine associations are also supported in the 'search' view. This config looks
+            # for data in the 'email' and 'phone' properties of the associated 'user' entity
+          search:
+            fields: ['id', 'name', 'company.name']
+
+
+        Company:
+          class: App\Entity\Company
+
+        SubstanceQuantity:
+          class: App\Entity\SubstanceQuantity
+        
+        Substance:
+          class: App\Entity\Substance
+          
+        Danger:
+          class: App\Entity\Danger
+
+        Formulation:
+          class: App\Entity\Formulation
+          
+        Mention:
+          class: App\Entity\Mention
+
+        Risk:
+          class: App\Entity\Risk
+
+        UsageCondition:
+          class: App\Entity\UsageCondition
+
+        UseCase:
+          class: App\Entity\UseCase

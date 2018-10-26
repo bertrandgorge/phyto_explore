@@ -7,9 +7,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\CompanyRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\DangerRepository")
  */
-class Company
+class Danger
 {
     /**
      * @ORM\Id()
@@ -19,17 +19,17 @@ class Company
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=25, nullable=true, unique=true)
+     * @ORM\Column(type="string", length=25, nullable=true)
      */
     private $ref_id;
 
     /**
-     * @ORM\Column(type="string", length=100, nullable=true)
+     * @ORM\Column(type="string", length=100, nullable=true, unique=true)
      */
-    private $name;
+    private $caption;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\AMMProduct", mappedBy="company")
+     * @ORM\ManyToMany(targetEntity="App\Entity\AMMProduct", inversedBy="dangers")
      */
     private $products;
 
@@ -42,10 +42,10 @@ class Company
     {
         return $this->id;
     }
-
+    
     public function __toString() {
-        return $this->name;
-    }    
+        return $this->caption;
+    }
 
     public function getRefId(): ?string
     {
@@ -59,14 +59,14 @@ class Company
         return $this;
     }
 
-    public function getName(): ?string
+    public function getCaption(): ?string
     {
-        return $this->name;
+        return $this->caption;
     }
 
-    public function setName(?string $name): self
+    public function setCaption(?string $caption): self
     {
-        $this->name = $name;
+        $this->caption = $caption;
 
         return $this;
     }
@@ -83,7 +83,6 @@ class Company
     {
         if (!$this->products->contains($product)) {
             $this->products[] = $product;
-            $product->setCompany($this);
         }
 
         return $this;
@@ -93,10 +92,6 @@ class Company
     {
         if ($this->products->contains($product)) {
             $this->products->removeElement($product);
-            // set the owning side to null (unless already changed)
-            if ($product->getCompany() === $this) {
-                $product->setCompany(null);
-            }
         }
 
         return $this;

@@ -7,9 +7,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\CompanyRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\RiskRepository")
  */
-class Company
+class Risk
 {
     /**
      * @ORM\Id()
@@ -24,12 +24,22 @@ class Company
     private $ref_id;
 
     /**
-     * @ORM\Column(type="string", length=100, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $name;
+    private $caption;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\AMMProduct", mappedBy="company")
+     * @ORM\Column(type="string", length=10, nullable=true)
+     */
+    private $code;
+
+    /**
+     * @ORM\Column(type="string", length=10, nullable=true)
+     */
+    private $pict;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\AMMProduct", inversedBy="risks")
      */
     private $products;
 
@@ -44,8 +54,8 @@ class Company
     }
 
     public function __toString() {
-        return $this->name;
-    }    
+        return $this->caption;
+    }
 
     public function getRefId(): ?string
     {
@@ -59,14 +69,38 @@ class Company
         return $this;
     }
 
-    public function getName(): ?string
+    public function getCaption(): ?string
     {
-        return $this->name;
+        return $this->caption;
     }
 
-    public function setName(?string $name): self
+    public function setCaption(?string $caption): self
     {
-        $this->name = $name;
+        $this->caption = $caption;
+
+        return $this;
+    }
+
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    public function setCode(?string $code): self
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    public function getPict(): ?string
+    {
+        return $this->pict;
+    }
+
+    public function setPict(?string $pict): self
+    {
+        $this->pict = $pict;
 
         return $this;
     }
@@ -83,7 +117,6 @@ class Company
     {
         if (!$this->products->contains($product)) {
             $this->products[] = $product;
-            $product->setCompany($this);
         }
 
         return $this;
@@ -93,10 +126,6 @@ class Company
     {
         if ($this->products->contains($product)) {
             $this->products->removeElement($product);
-            // set the owning side to null (unless already changed)
-            if ($product->getCompany() === $this) {
-                $product->setCompany(null);
-            }
         }
 
         return $this;
