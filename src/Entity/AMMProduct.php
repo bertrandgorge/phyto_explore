@@ -119,6 +119,20 @@ class AMMProduct
     {
         return $this->product_type;
     }
+    public function getproductTypeLabel(): ?string
+    {
+        switch($this->product_type)
+        {
+            case 'A':  return 'Adjuvant';
+            case 'M':  return 'Mélange';
+            case 'F':  return 'MFSC (Matières fertilisantes et supports de cultures)';
+            case 'P':  return 'PPP (Produit Phytopharmaceutique)';
+            case 'X':  return 'Produit-Mixte';
+            default:
+                return 'Unknown product type';
+        }
+
+    }
 
     public function setProductType(?string $product_type): self
     {
@@ -130,6 +144,21 @@ class AMMProduct
     public function getStatus(): ?string
     {
         return $this->status;
+    }
+    
+    public function getStatusLabel(): ?string
+    {
+        switch($this->status)
+        {
+            case 'A': return 'Autorisé';
+            case 'O': return 'Autre cas';
+            case 'C': return 'Inscription en cours';
+            case 'I': return 'Inscrite';
+            case 'N': return 'Non inscrite';
+            case 'R': return 'Retiré';        
+            default:
+                return "Status unknown";
+        }
     }
 
     public function setStatus(?string $status): self
@@ -154,6 +183,20 @@ class AMMProduct
     public function getCommercialType(): ?string
     {
         return $this->commercial_type;
+    }
+
+    public function getCommercialTypeLabel(): ?string
+    {
+        switch($this->commercial_type)
+        {
+            case 'R': return 'Produit de référence';
+            case 'S': return 'Second nom commercial';
+            case 'D': return 'Deuxième gamme';
+            case 'P': return 'Produit de revente';
+            case 'G': return 'Générique';
+            default:
+                return "Unknown commercial type";
+        }
     }
 
     public function setCommercialType(?string $commercial_type): self
@@ -236,6 +279,24 @@ class AMMProduct
     public function getUsageConditions(): Collection
     {
         return $this->usageConditions;
+    }
+
+    public function getUsageConditionsList(): ?string
+    {
+        $str = '';
+        $currentCatName = '';
+
+        foreach ($this->usageConditions as $condition)
+        {
+            if ($currentCatName != $condition->getCatName())
+                $str .= '<h4>' . $condition->getCatName() . '</h4>';
+                
+            $str .= '<p>' . nl2br($condition->getDescription()) . '</p>';
+
+            $currentCatName = $condition->getCatName();
+        }
+
+        return $str;
     }
 
     public function addUsageCondition(UsageCondition $usageCondition): self

@@ -43,9 +43,9 @@ class UsageCondition
     }
 
     public function __toString() {
-        return $this->cat_name . ' (' . $this->description . ')';
+        return $this->cat_name . ' : ' . $this->description;
     }    
-    
+
     public function getCatRefId(): ?string
     {
         return $this->cat_ref_id;

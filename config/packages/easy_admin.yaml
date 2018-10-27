@@ -12,6 +12,26 @@ easy_admin:
           list:
             fields: [{ property: 'id', label: 'AMM' }, 'name', { property: 'company.name', sortable: true}]
 
+          show:
+            title: 'Product (AMM : %%entity_id%%)'
+            fields:
+              - { property: 'name', type: 'raw' }
+              - { property: 'id', type: 'raw', label: 'AMM'}
+              - { property: 'company'}
+              - { property: 'productTypeLabel', label: 'Product type'}
+              - { property: 'statusLabel', label: 'Status'}
+              - { property: 'commercialTypeLabel', label: 'Commercial type'}
+              - { property: 'immatriculationDate', type: 'date'}
+              - { property: 'professionalUse', type: 'boolean'}
+              - { property: 'SubstanceQuantities', type: 'array'}
+              - { property: 'UsageConditionsList', type: 'raw'}
+              - { property: 'Usecases', type: 'array'}
+              - { property: 'formulations', type: 'array'}
+              - { property: 'mentions', type: 'array'}
+              - { property: 'dangers', type: 'array'}
+              - { property: 'risks', type: 'array'}
+              - { property: 'linkedProducts', type: 'array'}
+
 
             # Doctrine associations are also supported in the 'search' view. This config looks
             # for data in the 'email' and 'phone' properties of the associated 'user' entity
