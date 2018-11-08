@@ -22,7 +22,7 @@ class SubstanceQuantity
     private $quantity;
 
     /**
-     * @ORM\Column(type="string", length=10)
+     * @ORM\Column(type="string", length=20)
      */
     private $unit;
 
@@ -44,7 +44,7 @@ class SubstanceQuantity
     }
 
     public function __toString() {
-        return $this->substance . ' - ' . $this->quantity . ' ' . $this->unit;
+        return $this->product . ' - ' . $this->substance . ' - ' . $this->quantity . ' ' . $this->unit;
     }    
     
     public function getQuantity()

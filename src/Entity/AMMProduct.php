@@ -92,6 +92,21 @@ class AMMProduct
      */
     private $linkedProducts;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\YearlyAMMUsage", mappedBy="product", orphanRemoval=true)
+     */
+    private $yearlyUsages;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\IFT", mappedBy="product", orphanRemoval=true)
+     */
+    private $targets;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $biocontrol;
+
 
     public function __construct()
     {
@@ -104,6 +119,8 @@ class AMMProduct
         $this->dangers = new ArrayCollection();
         $this->risks = new ArrayCollection();
         $this->linkedProducts = new ArrayCollection();
+        $this->yearlyUsages = new ArrayCollection();
+        $this->targets = new ArrayCollection();
     }
 
     public function __toString() {
@@ -484,6 +501,123 @@ class AMMProduct
         if ($this->linkedProducts->contains($linkedProduct)) {
             $this->linkedProducts->removeElement($linkedProduct);
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|YearlyAMMUsage[]
+     */
+    public function getYearlyUsages(): Collection
+    {
+        return $this->yearlyUsages;
+    }
+
+    /**
+     * @return Collection|YearlyAMMUsage[]
+     */
+    public function getNationwideYearlyUsages(): Array
+    {
+        $years = array();
+
+        foreach ($this->yearlyUsages as $usage)
+        {
+            if (!isset($year[$usage->getYear()]))
+                $years[$usage->getYear()] = $usage->getQuantity();
+            else
+                $years[$usage->getYear()] += $usage->getQuantity();
+        }
+
+        foreach ($years as $year => $qty) 
+            $years[$year] = round($qty);
+
+        return $years;
+    }
+
+    /**
+     * Get the yearly usage unit, in textual form (should be translated)
+     * @return String the unit (Litre or KG)
+     */
+    public function getYearlyUsagesUnit()
+    {
+       foreach ($this->yearlyUsages as $usage)
+        {
+            switch ($usage->getUnit()) {
+                case 'L':
+                    return "Litres";
+
+                case 'K':
+                    return "Kg";
+                    
+            }
+            break;
+        }        
+
+        return "";
+    }
+
+    public function addYearlyUsage(YearlyAMMUsage $yearlyUsage): self
+    {
+        if (!$this->yearlyUsages->contains($yearlyUsage)) {
+            $this->yearlyUsages[] = $yearlyUsage;
+            $yearlyUsage->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeYearlyUsage(YearlyAMMUsage $yearlyUsage): self
+    {
+        if ($this->yearlyUsages->contains($yearlyUsage)) {
+            $this->yearlyUsages->removeElement($yearlyUsage);
+            // set the owning side to null (unless already changed)
+            if ($yearlyUsage->getProduct() === $this) {
+                $yearlyUsage->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|IFT[]
+     */
+    public function getTargets(): Collection
+    {
+        return $this->targets;
+    }
+
+    public function addTarget(IFT $target): self
+    {
+        if (!$this->targets->contains($target)) {
+            $this->targets[] = $target;
+            $target->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTarget(IFT $target): self
+    {
+        if ($this->targets->contains($target)) {
+            $this->targets->removeElement($target);
+            // set the owning side to null (unless already changed)
+            if ($target->getProduct() === $this) {
+                $target->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getBiocontrol(): ?bool
+    {
+        return $this->biocontrol;
+    }
+
+    public function setBiocontrol(?bool $biocontrol): self
+    {
+        $this->biocontrol = $biocontrol;
 
         return $this;
     }

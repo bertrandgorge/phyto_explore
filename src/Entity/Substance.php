@@ -38,10 +38,26 @@ class Substance
      */
     private $substanceQuantities;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $bnvd_name;
+
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    private $cas;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\YearlySubstanceUsage", mappedBy="substance", orphanRemoval=true)
+     */
+    private $yearlyUsages;
+
     public function __construct()
     {
         $this->products = new ArrayCollection();
         $this->substanceQuantities = new ArrayCollection();
+        $this->yearlyUsages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -114,6 +130,61 @@ class Substance
             // set the owning side to null (unless already changed)
             if ($substanceQuantity->getSubstance() === $this) {
                 $substanceQuantity->setSubstance(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getBnvdName(): ?string
+    {
+        return $this->bnvd_name;
+    }
+
+    public function setBnvdName(?string $bnvd_name): self
+    {
+        $this->bnvd_name = $bnvd_name;
+
+        return $this;
+    }
+
+    public function getCas(): ?string
+    {
+        return $this->cas;
+    }
+
+    public function setCas(?string $cas): self
+    {
+        $this->cas = $cas;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|YearlySubstanceUsage[]
+     */
+    public function getYearlyUsages(): Collection
+    {
+        return $this->yearlyUsages;
+    }
+
+    public function addYearlyUsage(YearlySubstanceUsage $yearlyUsage): self
+    {
+        if (!$this->yearlyUsages->contains($yearlyUsage)) {
+            $this->yearlyUsages[] = $yearlyUsage;
+            $yearlyUsage->setSubstance($this);
+        }
+
+        return $this;
+    }
+
+    public function removeYearlyUsage(YearlySubstanceUsage $yearlyUsage): self
+    {
+        if ($this->yearlyUsages->contains($yearlyUsage)) {
+            $this->yearlyUsages->removeElement($yearlyUsage);
+            // set the owning side to null (unless already changed)
+            if ($yearlyUsage->getSubstance() === $this) {
+                $yearlyUsage->setSubstance(null);
             }
         }
 
